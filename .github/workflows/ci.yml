@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      neo4j:
+        image: neo4j:5.26-community
+        env:
+          NEO4J_AUTH: neo4j/roottrace-dev
+        ports:
+          - 7687:7687
+        options: >-
+          --health-cmd "cypher-shell -u neo4j -p roottrace-dev 'RETURN 1'"
+          --health-interval 5s --health-timeout 5s --health-retries 30
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: ruff check . && ruff format --check .
+      - name: Tests (including Neo4j integration)
+        env:
+          NEO4J_URI: bolt://localhost:7687
+        run: pytest
+      - name: Benchmark smoke run
+        run: python -m roottrace benchmark --out /tmp/results --topologies 1 --incidents 2
