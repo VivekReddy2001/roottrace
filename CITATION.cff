@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software or benchmark, please cite it as below."
+title: "RootTrace: graph-based root-cause analysis for microservice incidents"
+type: software
+authors:
+  - family-names: Pitta
+    given-names: Vivek Reddy
+repository-code: "https://github.com/VivekReddy2001/roottrace"
+license: MIT
+version: 0.1.0
+date-released: 2026-10-01
+keywords:
+  - root cause analysis
+  - microservices
+  - AIOps
+  - PageRank
+  - random walk
+  - Neo4j
